@@ -11,14 +11,18 @@ public class CrystiXGame : Game
 
     private GemFactory _gemFactory;
     private GemCluster _gemCluster;
+    private GemArena _gemArena;
 
     public CrystiXGame()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+        _graphics.PreferredBackBufferWidth = Settings.ArenaWidth*3;
+        _graphics.PreferredBackBufferHeight = Settings.ArenaHeight;
 
         _gemFactory = new GemFactory(Content);
+        _gemArena = new GemArena();
     }
 
     protected override void Initialize()
@@ -33,6 +37,7 @@ public class CrystiXGame : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         _gemCluster = _gemFactory.GetRandomGemCluster();
+        _gemCluster.SetPosition(_gemArena.Position + new Vector2(2*Settings.GemWidth,0));
 
         // TODO: use this.Content to load your game content here
     }
@@ -43,10 +48,20 @@ public class CrystiXGame : Game
             Exit();
 
         if (Keyboard.GetState().IsKeyDown(Keys.Left))
-            _gemCluster.MoveLeft();
+        {
+            if (_gemCluster.Position.X > _gemArena.Position.X)
+            {
+                _gemCluster.MoveLeft();
+            }
+        }
 
         if (Keyboard.GetState().IsKeyDown(Keys.Right))
-            _gemCluster.MoveRight();
+        {
+            if (_gemCluster.Position.X < _gemArena.Position.X + Settings.ArenaWidth - Settings.GemWidth)
+            {
+                _gemCluster.MoveRight();
+            }
+        }
 
         // TODO: Add your update logic here
         _gemCluster.MoveDown();
@@ -61,6 +76,7 @@ public class CrystiXGame : Game
         // TODO: Add your drawing code here
         _spriteBatch.Begin();
 
+        _gemArena.Draw(_spriteBatch);
         _gemCluster.Draw(_spriteBatch);
 
         _spriteBatch.End();
