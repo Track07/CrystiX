@@ -10,7 +10,7 @@ public class CrystiXGame : Game
     private SpriteBatch _spriteBatch;
 
     private GemFactory _gemFactory;
-    private Gem[] gems = new Gem[20];
+    private GemCluster _gemCluster;
 
     public CrystiXGame()
     {
@@ -32,10 +32,7 @@ public class CrystiXGame : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        for (int i = 0; i < gems.Length; i++)
-        {
-            gems[i] = _gemFactory.GetRandomGem();
-        }
+        _gemCluster = _gemFactory.GetRandomGemCluster();
 
         // TODO: use this.Content to load your game content here
     }
@@ -45,7 +42,14 @@ public class CrystiXGame : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
+        if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            _gemCluster.MoveLeft();
+
+        if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            _gemCluster.MoveRight();
+
         // TODO: Add your update logic here
+        _gemCluster.MoveDown();
 
         base.Update(gameTime);
     }
@@ -57,10 +61,7 @@ public class CrystiXGame : Game
         // TODO: Add your drawing code here
         _spriteBatch.Begin();
 
-        for (int i = 0; i < gems.Length; i++)
-        {
-            _spriteBatch.Draw(gems[i].Texture, new Vector2(0, 0 + i*25), Color.White);
-        }
+        _gemCluster.Draw(_spriteBatch);
 
         _spriteBatch.End();
 

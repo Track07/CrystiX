@@ -25,5 +25,10 @@
             return new Gem { Texture = m_contentManager.Load<Texture2D>(m_textures[randomNumber]) };
         }
 
+        public GemCluster GetRandomGemCluster()
+        {
+            return new GemCluster(new[] { GetRandomGem(), GetRandomGem(), GetRandomGem() });
+        }
+
     }
 }
