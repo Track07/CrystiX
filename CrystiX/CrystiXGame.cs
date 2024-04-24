@@ -22,7 +22,7 @@ public class CrystiXGame : Game
         _graphics.PreferredBackBufferHeight = Settings.ArenaHeight;
 
         _gemFactory = new GemFactory(Content);
-        _gemArena = new GemArena();
+        _gemArena = new GemArena(_gemFactory);
     }
 
     protected override void Initialize()
@@ -36,8 +36,7 @@ public class CrystiXGame : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        _gemCluster = _gemFactory.GetRandomGemCluster();
-        _gemCluster.SetPosition(_gemArena.Position + new Vector2(2*Settings.GemWidth,0));
+        _gemCluster = _gemArena.SpawnCluster();
 
         // TODO: use this.Content to load your game content here
     }
@@ -63,8 +62,15 @@ public class CrystiXGame : Game
             }
         }
 
-        // TODO: Add your update logic here
-        _gemCluster.MoveDown();
+        if (_gemArena.CanMove(_gemCluster))
+        {
+            _gemCluster.MoveDown();
+        }
+        else
+        {
+            _gemArena.AddCluster(_gemCluster);
+            _gemCluster = _gemArena.SpawnCluster();
+        }
 
         base.Update(gameTime);
     }
